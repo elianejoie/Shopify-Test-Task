@@ -1,0 +1,123 @@
+{{ 'module-image-with-text.css' | asset_url | stylesheet_tag }}
+
+{%liquid
+  assign background_color = section.settings.background_color
+
+  assign heading = section.settings.heading
+  assign description = section.settings.description
+  assign button_label = section.settings.button_label
+  assign button_link = section.settings.button_link
+
+  assign image_position = section.settings.image_position
+  assign image = section.settings.image
+%}
+
+{% style %}
+  #module-image-with-text--{{ section.id }} .module-image-with-text__columns--left {
+      flex-direction: row-reverse;
+  }
+
+  @media screen and (max-width: 600px ) {
+    #module-image-with-text--{{ section.id }} .module-image-with-text__contents {
+          flex-direction: column-reverse;
+      }
+  }
+{% endstyle %}
+
+<div id="module-image-with-text--{{ section.id }}" class="module-image-with-text" style="background: {{ background_color }};">
+  <div class="module-image-with-text__container">
+      <div class="module-image-with-text__contents d-flex {% if image_position == 'left' %} module-image-with-text__columns--left {% elsif image_position == 'right' %} module-image-with-text__columns--right {% endif %}">
+        <div class="module-image-with-text__column flex-basis-100">
+          <div class="module-image-with-text__column-headings">
+              {% if heading != blank %}
+                  <h2 class="module-image-with-text__column-heading">{{ heading }}</h2>
+              {% endif %}
+              {% if description != blank %}
+                  <p class="module-image-with-text__column-description remove-spacing">{{ description }}</p>
+              {% endif %}
+
+              {% if button_label != blank %}
+                <div class="module-image-with-text__button">
+                  <a href="{{ button_link }}"
+                      class="module-image-with-text__butto btn--primary"
+                      aria-label="Go to Shop Page">
+                      {{ button_label }}
+                  </a>
+                </div>
+              {% endif %}
+          </div>
+        </div>
+
+        <div class="module-image-with-text__column flex-basis-100">
+          {% if image != blank %}
+              <img class="module-image-with-text__image"  src="{{ image | img_url: 'master' }}" alt="{{ image.alt }}" loading="lazy">
+          {% endif %}
+        </div>
+      </div>
+  </div>
+</div>
+
+{% schema %}
+    {
+      "name": "Module Image with text",
+      "class": "module",
+      "settings": [
+        {
+            "type": "color",
+            "id": "background_color",
+            "label": "Background Color",
+            "default": "#F1ECE5"
+        },
+        {
+            "type": "select",
+            "id": "image_position",
+            "label": "Image Position",
+            "options": [
+                {
+                "value": "left",
+                "label": "Left"
+                },
+                {
+                "value": "right",
+                "label": "Right"
+                }
+            ],
+            "default": "right"
+        },
+        {
+            "type": "image_picker",
+            "id": "image",
+            "label": "Select Image"
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Supersized Hydration"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Description",
+          "default": "Get 50% more with <b>NEW</b> Leave-in Conditioner Jumbo."
+        },
+        {
+            "type": "text",
+            "id": "button_label",
+            "label": "Button Label",
+            "default": "Shop Now"
+        },
+        {
+            "type": "url",
+            "id": "button_link",
+            "label": "Button Link"
+        }
+      ],
+      "presets": [
+        {
+          "category": "Column",
+          "name": "Module Image with text"
+        }
+      ]
+    }
+{% endschema %}

@@ -1,0 +1,119 @@
+{{ 'module-product.css' | asset_url | stylesheet_tag }}
+
+{% liquid
+  assign title = section.settings.title
+  assign heading_style = section.settings.heading_style
+  assign product_list = section.settings.product_list
+%}
+
+<div id="module-product-{{ section.id }}" class="module-product">
+    <div class="module-product__container page-width">
+        <div class="module-product__headings">
+            {% case heading_style %}
+                {% when 'h1' %}
+                    <h1 class="module-product__heading h1 text-center">{{ title}}</h1>
+                {% when 'h2' %}
+                    <h2 class="module-product__heading h2 text-center">{{ title}}</h2>
+                {% when 'h3' %}
+                    <h3 class="module-product__heading h3 text-center">{{ title}}</h3>
+                {% when 'h4' %}
+                    <h4 class="module-product__heading h4 text-center">{{ title}}</h4>
+                {% when 'h5' %}
+                    <h5 class="module-product__heading h5 text-center">{{ title}}</h5>
+                {% when 'h6' %}
+                    <h6 class="module-product__heading h6 text-center">{{ title}}</h6>
+                {% else %}
+                    <p class="module-product__heading">{{ title}}</p>
+            {% endcase %}
+        </div>
+        <div class="module-product__products d-flex">
+            {% for product in product_list %}
+                <!-- Assuming product_list returns product handles. Adjust as necessary based on your setup -->
+                {% assign product = all_products[product] %}
+                <div class="module-product__product-item flex-basis-100">
+                    <a class="module-product__link" href="{{ product.url }}">
+                        <img src="{{ product.featured_image | img_url: 'master' }}" alt="{{ product.title }}">
+                      
+                        <h4 class="module-product__heading">{{ product.title }}</h4>
+
+                        {% if product.compare_at_price > product.price %}
+                            <p class="module-product__price module-product__compare_at_price"><del>{{ product.compare_at_price | money }}</del> - {{ product.price | money }}</p>
+                        {% else %}
+                            <p class="module-product__price">{{ product.price | money }}</p>
+                        {% endif %}
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+
+{% schema %}
+{
+  "name": "Module Product",
+  "class": "module",
+  "settings": [
+    {
+        "type": "color",
+        "id": "background_color",
+        "label": "Background Color",
+        "default": "#FFFFFF"
+    },
+    {
+        "type": "text",
+        "id": "title",
+        "default": "BEST SELLERS",
+        "label": "Heading"
+    },
+    {
+        "type": "select",
+        "id": "heading_style",
+        "label": "Style",
+        "options": [
+        {
+            "value": "h1",
+            "label": "H1"
+        },
+        {
+            "value": "h2",
+            "label": "H2"
+        },
+        {
+            "value": "h3",
+            "label": "H3"
+        },
+        {
+            "value": "h4",
+            "label": "H4"
+        },
+        {
+            "value": "h5",
+            "label": "H5"
+        },
+        {
+            "value": "h6",
+            "label": "H6"
+        },
+        {
+            "value": "p",
+            "label": "P"
+        }
+        ],
+        "default": "h2"
+    },
+    {
+        "type": "product_list",
+        "id": "product_list",
+        "label": "Products",
+        "limit": 4
+    }
+  ],
+  "presets": [
+    {
+      "category": "Slider",
+      "name": "Module Product"
+    }
+  ]
+}
+{% endschema %}
